@@ -10,7 +10,7 @@ class FloatingChat extends StatefulWidget {
 class _FloatingChatState extends State<FloatingChat> {
   bool isOpen = false;
   bool isMinimized = false;
-  Offset position = Offset(250, 500); // Posición inicial del botón
+  Offset position = Offset(80, 80); // Posición inicial del botón
   double chatWidth = 350;
   double chatHeight = 450;
   TextEditingController _controller = TextEditingController();
@@ -118,6 +118,70 @@ class _FloatingChatState extends State<FloatingChat> {
               "Parece que faltan algunos datos. Proporciona tu nombre, correo y país separados por comas."
         });
       });
+    }
+  }
+
+  void _finishChat() async {
+    String conversation =
+        messages.map((msg) => "${msg['role']}: ${msg['content']}").join("\n");
+
+    try {
+      final response = await http.post(
+        Uri.parse("$apiUrl?key=$apiKey"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "contents": [
+            {
+              "parts": [
+                {
+                  "text":
+                      "Eres un asistente especializado en definir proyectos de software. A continuación te proporciono una conversación completa con un cliente. Por favor, genera un resumen detallado del proyecto basado en la conversación:\n\n$conversation"
+                }
+              ]
+            }
+          ]
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final String summary =
+            data['candidates'][0]['content']['parts'][0]['text'];
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Resumen del Proyecto"),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text("Nombre: ${userInfo['name']}"),
+                    Text("Email: ${userInfo['email']}"),
+                    Text("País: ${userInfo['country']}"),
+                    Text("Teléfono: ${userInfo['phone']}"),
+                    SizedBox(height: 20),
+                    Text("Resumen del Proyecto:"),
+                    Text(summary),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("Cerrar"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print("Error: ${response.body}");
+      }
+    } catch (e) {
+      print("Error en la solicitud: $e");
     }
   }
 
@@ -246,6 +310,14 @@ class _FloatingChatState extends State<FloatingChat> {
                                         sendMessage(_controller.text),
                                   ),
                                 ],
+                              ),
+                            ),
+                          if (!isMinimized)
+                            Padding(
+                              padding: EdgeInsets.all(8),
+                              child: ElevatedButton(
+                                onPressed: _finishChat,
+                                child: Text("Finalizar Chat"),
                               ),
                             ),
                         ],

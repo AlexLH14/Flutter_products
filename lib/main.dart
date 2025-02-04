@@ -6,7 +6,6 @@ import 'config/firebase_options.dart';
 import 'screens/product_details_page.dart';
 import 'screens/add_product.dart';
 import 'screens/edit_product.dart';
-import 'screens/chat_page.dart'; // Importamos la pantalla del chat
 import 'widgets/floating_chat.dart'; // Importamos el chat flotante
 
 void main() async {
@@ -57,17 +56,6 @@ class ProductListPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.blue,
         actions: [
-          IconButton(
-            icon: Icon(Icons.chat),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        ChatPage()), // Navega al chat tradicional
-              );
-            },
-          ),
           Switch(
             value: Theme.of(context).brightness == Brightness.dark,
             onChanged: (value) => onThemeToggle(),
