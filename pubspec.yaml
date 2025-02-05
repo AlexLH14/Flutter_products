@@ -39,6 +39,8 @@ dependencies:
   amazon_s3_cognito: ^0.8.1
   googleapis: ^13.2.0
   googleapis_auth: ^1.6.0
+  excel: ^2.0.0
+  path_provider: ^2.0.11
 
   # Agrega aquí el paquete HTTP para manejar las peticiones REST
   http: ^1.2.2

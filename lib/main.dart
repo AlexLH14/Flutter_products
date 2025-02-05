@@ -6,7 +6,8 @@ import 'config/firebase_options.dart';
 import 'screens/product_details_page.dart';
 import 'screens/add_product.dart';
 import 'screens/edit_product.dart';
-import 'widgets/floating_chat.dart'; // Importamos el chat flotante
+import 'widgets/floating_chat.dart';
+import 'widgets/export_excel_button.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +57,7 @@ class ProductListPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.blue,
         actions: [
+          ExportExcelButton(), // Agrega el botón de descarga aquí
           Switch(
             value: Theme.of(context).brightness == Brightness.dark,
             onChanged: (value) => onThemeToggle(),
